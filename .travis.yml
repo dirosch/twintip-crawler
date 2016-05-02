@@ -1,4 +1,4 @@
-language: clojure
-script: lein uberjar
+language: java
+script: gradle build
 jdk:
   - oraclejdk8

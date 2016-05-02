@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/zalando-stups/twintip-crawler.svg?branch=master)](https://travis-ci.org/zalando-stups/twintip-crawler)
 
 TWINTIP is an API definition crawler, that constantly crawls a list of applications for their API definitions.
-It works in conjunction with [Kio](http://zalando-stups.github.io) to get a list of all applications and their
-service endpoints and fetches their swagger specifications.
+It works in conjunction with [Kio](https://github.com/zalando-stups/kio) to get a list of all applications and their
+service endpoints and fetches their OpenAPI specifications.
 
 ## Download
 
@@ -23,24 +23,14 @@ Variable                 | Default | Description
 JOBS_KIO_URL             |         | Base url of Kio (mandatory)
 JOBS_TWINTIP_STORAGE_URL |         | Base url of Twintip storage (mandatory)
 OAUTH2_ACCESS_TOKEN_URL  |         | Needed for authentication (optional)
+CRAWLER_DELAY            |  300000 | Delay of scheduled crawling task in ms (optional)
+CRAWLER_JOBS             |      10 | Number of concurrent crawling jobs (optional)
 
 ## Building
 
-    $ lein uberjar
-    $ lein docker build
-
-## Releasing
-
-    $ lein release :minor
-
-## Developing
-
-Twintip embeds the [reloaded](http://thinkrelevance.com/blog/2013/06/04/clojure-workflow-reloaded) workflow for interactive
-development:
-
-    $ lein repl
-    user=> (go)
-    user=> (reset)
+    $ gradle build
+    $ scm-source
+    $ docker build -t stups/twintip-crawler .
 
 ## License
 

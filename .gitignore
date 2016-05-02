@@ -19,3 +19,11 @@ pom.xml.asc
 # IntelliJ IDEA
 /.idea
 *.iml
+
+# Gradle
+/gradle/wrapper/
+.gradle/
+build/
+
+# Stups
+scm-source.json
