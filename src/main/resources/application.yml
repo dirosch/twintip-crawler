@@ -6,6 +6,12 @@ tokens:
    - token-id: kio
      scopes:
       - uid
+   - token-id: twintip
+     scopes:
+      - uid
+   - token-id: schema
+     scopes:
+      - uid
 
 crawler.delay: 300000 # every 5 minutes
 crawler.jobs.pool: 10
