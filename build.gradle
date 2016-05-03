@@ -49,4 +49,6 @@ dependencies {
     compile('org.zalando.stups:spring-boot-zalando-stups-tokens:0.9.10')
     compile('org.zalando.stups:kio-client-java-spring:0.11.0')
     compile('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.7.4')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.assertj:assertj-core:3.3.0')
 }
