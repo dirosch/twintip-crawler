@@ -9,6 +9,7 @@ tokens:
    - token-id: twintip
      scopes:
       - uid
+      - application.write_all
    - token-id: schema
      scopes:
       - uid
