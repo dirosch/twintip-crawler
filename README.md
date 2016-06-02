@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/zalando-stups/twintip-crawler.svg?branch=master)](https://travis-ci.org/zalando-stups/twintip-crawler)
 
 TWINTIP is an API definition crawler, that constantly crawls a list of applications for their API definitions.
-It works in conjunction with [Kio](https://github.com/zalando-stups/kio) to get a list of all applications and their
-service endpoints and fetches their OpenAPI specifications.
+It works in conjunction with [Kio](https://github.com/zalando-stups/kio) to get a list of all applications and their service endpoints and fetches their OpenAPI specifications. In the background [TWINTIP Storage](https://github.com/zalando-stups/twintip-storage) acts as storage engine.
+This storage can then be used for other integration scenarios.
 
 ## Download
 
