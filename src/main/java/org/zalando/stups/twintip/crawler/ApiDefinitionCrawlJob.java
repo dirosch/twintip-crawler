@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.support.HttpRequestWrapper;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestOperations;
@@ -18,6 +16,7 @@ import org.zalando.stups.clients.kio.ApplicationBase;
 import org.zalando.stups.twintip.crawler.storage.CreateOrUpdateApiDefinitionRequest;
 import org.zalando.stups.twintip.crawler.storage.RestTemplateTwintipOperations;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -99,19 +98,28 @@ class ApiDefinitionCrawlJob implements Callable<Void> {
 
     private JsonNode retrieveApiDefinition(String url) throws Exception {
         try {
-            return schemaClient.getForObject(url, JsonNode.class);
-        } catch (Exception e) {
-            LOG.info("Try to load api definition as yaml for service {}", app.getId());
-
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", "application/yaml");
-            ResponseEntity<String> yamlApiDefinition = schemaClient.exchange(url, HttpMethod.GET, new HttpEntity(headers), String.class);
+            headers.set("Accept", "*/*");
+            ResponseEntity<JsonNode> responseEntity = schemaClient.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), JsonNode.class);
 
-            if (!yamlApiDefinition.getStatusCode().is2xxSuccessful()) {
-                throw new HttpClientErrorException(yamlApiDefinition.getStatusCode(),
-                        "Could not load yaml api definition");
-            }
-            return new ObjectMapper(new YAMLFactory()).readValue(yamlApiDefinition.getBody(), JsonNode.class);
+            return responseEntity.getStatusCode().is2xxSuccessful()
+                    ? responseEntity.getBody()
+                    : tryRetrieveApiDefinitionAsYaml(url);
+        } catch (Exception e) {
+            return tryRetrieveApiDefinitionAsYaml(url);
         }
+    }
+
+    private JsonNode tryRetrieveApiDefinitionAsYaml(String url) throws IOException {
+        LOG.info("Try to load api definition as yaml for service {}", app.getId());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", "*/*");
+        ResponseEntity<String> yamlApiDefinition = schemaClient.exchange(url, HttpMethod.GET, new HttpEntity(headers), String.class);
+
+        if (!yamlApiDefinition.getStatusCode().is2xxSuccessful()) {
+            throw new HttpClientErrorException(yamlApiDefinition.getStatusCode(), "Could not load yaml api definition");
+        }
+        return new ObjectMapper(new YAMLFactory()).readValue(yamlApiDefinition.getBody(), JsonNode.class);
     }
 }
