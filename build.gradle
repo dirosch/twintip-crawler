@@ -45,8 +45,8 @@ repositories {
 dependencies {
     compile('org.springframework.boot:spring-boot-starter')
     compile('org.apache.httpcomponents:httpclient:4.5.1')
-    compile('org.zalando.stups:stups-spring-oauth2-client:1.0.14')
-    compile('org.zalando.stups:spring-boot-zalando-stups-tokens:0.9.10')
+    compile('org.zalando.stups:stups-spring-oauth2-client:1.0.15')
+    compile('org.zalando.stups:spring-boot-zalando-stups-tokens:0.9.11')
     compile('org.zalando.stups:kio-client-java-spring:0.11.0')
     compile('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.7.4')
     testCompile('org.springframework.boot:spring-boot-starter-test')
