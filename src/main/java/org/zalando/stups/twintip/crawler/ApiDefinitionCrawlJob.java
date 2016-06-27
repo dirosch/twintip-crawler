@@ -77,12 +77,17 @@ class ApiDefinitionCrawlJob implements Callable<Void> {
 
     private Optional<JsonNode> retrieveSchemaDiscovery(String serviceUrl) {
         try {
-            return Optional.of(schemaClient.getForObject(serviceUrl + ".well-known/schema-discovery", JsonNode.class));
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().value() == 404) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Accept", "*/*");
+            ResponseEntity<JsonNode> responseEntity = schemaClient.exchange(
+                    serviceUrl + ".well-known/schema-discovery", HttpMethod.GET, new HttpEntity<>(headers), JsonNode.class);
+
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                return Optional.of(responseEntity.getBody());
+            } else if (responseEntity.getStatusCode().value() == 404) {
                 LOG.info("Service {} does not implement api discovery", app.getId());
             } else {
-                LOG.info("Error while loading api discovery of service {}: {}", app.getId(), e.getMessage());
+                LOG.info("Error while loading api discovery of service {}: {}", app.getId(), responseEntity.getStatusCode());
             }
         } catch (ResourceAccessException e) {
             if (e.getCause() instanceof UnknownHostException) {
