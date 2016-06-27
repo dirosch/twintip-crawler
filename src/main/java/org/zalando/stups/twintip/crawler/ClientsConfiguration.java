@@ -20,6 +20,15 @@ public class ClientsConfiguration {
     @Autowired
     private AccessTokens accessTokens;
 
+    @Value("${crawler.timeout.read}")
+    private int readTimeout = 5000;
+
+    @Value("${crawler.timeout.connect}")
+    private int connectTimeout = 2000;
+
+    @Value("${crawler.timeout.connection-request}")
+    private int connectionRequestTimeout = 1000;
+
     @Bean
     public KioOperations kioOperations(@Value("${jobs.kio.url}") String kioBaseUrl) {
         return new RestTemplateKioOperations(buildOAuth2RestTemplate("kio"), kioBaseUrl);
@@ -38,9 +47,9 @@ public class ClientsConfiguration {
     private RestOperations buildOAuth2RestTemplate(final String tokenName) {
         return new StupsOAuth2RestTemplate(new StupsTokensAccessTokenProvider(tokenName, accessTokens),
                 ClientHttpRequestFactorySelector.getRequestFactory(new TimeoutConfig.Builder()
-                        .withReadTimeout(5000)
-                        .withConnectTimeout(2000)
-                        .withConnectionRequestTimeout(1000)
+                        .withReadTimeout(readTimeout)
+                        .withConnectTimeout(connectTimeout)
+                        .withConnectionRequestTimeout(connectionRequestTimeout)
                         .build()));
     }
 }

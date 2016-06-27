@@ -16,3 +16,7 @@ tokens:
 
 crawler.delay: 300000 # every 5 minutes
 crawler.jobs.pool: 10
+
+crawler.timeout.read: 5000
+crawler.timeout.connect: 2000
+crawler.timeout.connection-request: 1000
