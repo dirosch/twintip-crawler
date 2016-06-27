@@ -13,7 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestOperations;
 import org.zalando.stups.clients.kio.ApplicationBase;
-import org.zalando.stups.twintip.crawler.storage.CreateOrUpdateApiDefinitionRequest;
+import org.zalando.stups.twintip.crawler.storage.ApiDefinition;
 import org.zalando.stups.twintip.crawler.storage.RestTemplateTwintipOperations;
 
 import java.io.IOException;
@@ -51,7 +51,7 @@ class ApiDefinitionCrawlJob implements Callable<Void> {
                 final String schemaType = schemaDiscoveryInformation.get("schema_type").asText("");
                 final JsonNode apiDefinition = retrieveApiDefinition(serviceUrl + apiDefinitionUrl);
 
-                final CreateOrUpdateApiDefinitionRequest updateApiDefinitionRequrest = new CreateOrUpdateApiDefinitionRequest(
+                final ApiDefinition updateApiDefinitionRequrest = new ApiDefinition(
                         "SUCCESS",
                         schemaType,
                         apiDefinition.get("info").get("title").asText(),
@@ -64,15 +64,28 @@ class ApiDefinitionCrawlJob implements Callable<Void> {
                 twintipClient.createOrUpdateApiDefintion(updateApiDefinitionRequrest, app.getId());
                 LOG.info("Successfully crawled api definition of {}", app.getId());
             } else {
-                twintipClient.createOrUpdateApiDefintion(CreateOrUpdateApiDefinitionRequest.UNAVAILABLE, app.getId());
-                LOG.info("Api definition unavailable for {}", app.getId());
+                if (!wasSuccessfullyCrawled(app.getId())) {
+                    twintipClient.createOrUpdateApiDefintion(ApiDefinition.UNAVAILABLE, app.getId());
+                    LOG.info("Api definition unavailable for {}", app.getId());
+                } else {
+                    LOG.info("Api definition unavailable for {} but was crawled successfully in past", app.getId());
+                }
             }
             return null;
         } catch (Exception e) {
-            LOG.info("Could not crawl {}: {}", app.getId(), e.getMessage());
-            twintipClient.createOrUpdateApiDefintion(CreateOrUpdateApiDefinitionRequest.UNDISCOVERABLE, app.getId());
+            if (!wasSuccessfullyCrawled(app.getId())) {
+                twintipClient.createOrUpdateApiDefintion(ApiDefinition.UNDISCOVERABLE, app.getId());
+                LOG.info("Could not crawl {}: {}", app.getId(), e.getMessage());
+            } else {
+                LOG.info("Could not crawl {}: {} but was crawled successfully in past", app.getId(), e.getMessage());
+            }
             return null;
         }
+    }
+
+    private boolean wasSuccessfullyCrawled(String applicationId) {
+        Optional<ApiDefinition> apiDefinition = twintipClient.getApiDefinition(applicationId);
+        return apiDefinition.isPresent() && "success".equalsIgnoreCase(apiDefinition.get().getStatus());
     }
 
     private Optional<JsonNode> retrieveSchemaDiscovery(String serviceUrl) {

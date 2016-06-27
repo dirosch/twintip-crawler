@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreateOrUpdateApiDefinitionRequest {
+public class ApiDefinition {
 
-    public static CreateOrUpdateApiDefinitionRequest UNAVAILABLE = new CreateOrUpdateApiDefinitionRequest(
+    public static ApiDefinition UNAVAILABLE = new ApiDefinition(
             "UNAVAILABLE", null, null, null, null, null, null
     );
 
-    public static CreateOrUpdateApiDefinitionRequest UNDISCOVERABLE = new CreateOrUpdateApiDefinitionRequest(
+    public static ApiDefinition UNDISCOVERABLE = new ApiDefinition(
             "UNDISCOVERABLE", null, null, null, null, null, null
     );
 
@@ -35,13 +35,13 @@ public class CreateOrUpdateApiDefinitionRequest {
     @JsonProperty("definition")
     private String definition;
 
-    public CreateOrUpdateApiDefinitionRequest() {
+    public ApiDefinition() {
     }
 
-    public CreateOrUpdateApiDefinitionRequest(String status, String type,
-                                              String name, String version,
-                                              String schemaUrl, String uiLink,
-                                              String definition) {
+    public ApiDefinition(String status, String type,
+                         String name, String version,
+                         String schemaUrl, String uiLink,
+                         String definition) {
         this.status = status;
         this.type = type;
         this.name = name;
