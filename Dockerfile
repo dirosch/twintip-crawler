@@ -2,8 +2,9 @@ FROM registry.opensource.zalan.do/stups/openjdk:8-26
 
 MAINTAINER Zalando SE
 
-COPY build/libs/twintip-crawler.jar /
-
-CMD java $JAVA_OPTS $(java-dynamic-memory-opts) $(appdynamics-agent) -jar /twintip-crawler.jar
-
+ADD build/libs/twintip-crawler.jar /
 ADD scm-source.json /scm-source.json
+
+EXPOSE 8080
+
+CMD java -Xmx512m $(appdynamics-agent) -jar /twintip-crawler.jar
