@@ -7,11 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ApiDefinition {
 
     public static ApiDefinition UNAVAILABLE = new ApiDefinition(
-            "UNAVAILABLE", null, null, null, null, null, null
+            "UNAVAILABLE", null, null, null, null, null, null, null
     );
 
     public static ApiDefinition UNDISCOVERABLE = new ApiDefinition(
-            "UNDISCOVERABLE", null, null, null, null, null, null
+            "UNDISCOVERABLE", null, null, null, null, null, null, null
     );
 
     @JsonProperty("status")
@@ -25,6 +25,9 @@ public class ApiDefinition {
 
     @JsonProperty("version")
     private String version;
+
+    @JsonProperty("service_url")
+    private String serviceUrl;
 
     @JsonProperty("url")
     private String schemaUrl;
@@ -40,12 +43,13 @@ public class ApiDefinition {
 
     public ApiDefinition(String status, String type,
                          String name, String version,
-                         String schemaUrl, String uiLink,
-                         String definition) {
+                         String serviceUrl, String schemaUrl,
+                         String uiLink, String definition) {
         this.status = status;
         this.type = type;
         this.name = name;
         this.version = version;
+        this.serviceUrl = serviceUrl;
         this.schemaUrl = schemaUrl;
         this.uiLink = uiLink;
         this.definition = definition;
@@ -81,6 +85,14 @@ public class ApiDefinition {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getServiceUrl() {
+        return serviceUrl;
+    }
+
+    public void setServiceUrl(String serviceUrl) {
+        this.serviceUrl = serviceUrl;
     }
 
     public String getSchemaUrl() {
