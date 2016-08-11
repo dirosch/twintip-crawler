@@ -51,17 +51,18 @@ class ApiDefinitionCrawlJob implements Callable<Void> {
                 final String schemaType = schemaDiscoveryInformation.get("schema_type").asText("");
                 final JsonNode apiDefinition = retrieveApiDefinition(serviceUrl + apiDefinitionUrl);
 
-                final ApiDefinition updateApiDefinitionRequrest = new ApiDefinition(
+                final ApiDefinition updateApiDefinitionRequest = new ApiDefinition(
                         "SUCCESS",
                         schemaType,
                         apiDefinition.get("info").get("title").asText(),
                         apiDefinition.get("info").get("version").asText(),
+                        serviceUrl,
                         apiDefinitionUrl,
                         schemaDiscoveryInformation.has("ui_url") ? schemaDiscoveryInformation.get("ui_url").asText() : null,
                         apiDefinition.toString()
                 );
 
-                twintipClient.createOrUpdateApiDefintion(updateApiDefinitionRequrest, app.getId());
+                twintipClient.createOrUpdateApiDefintion(updateApiDefinitionRequest, app.getId());
                 LOG.info("Successfully crawled api definition of {}", app.getId());
             } else {
                 if (!wasSuccessfullyCrawled(app.getId())) {
